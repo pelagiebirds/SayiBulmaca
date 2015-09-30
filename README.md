@@ -7,7 +7,7 @@ The game requires jQuery. Include jQuery first. Then add sayi.bulmaca.js with a 
 
 ##How to initialise the game?
 
-Just a a div tag in the HTML file. Then add a script tag with this piece of code.
+Just add a div tag in the HTML file. Then add a script tag with this piece of code.
 
 ```
 $(document).ready(function() {
