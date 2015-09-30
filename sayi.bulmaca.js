@@ -20,6 +20,9 @@ function SayiBulmaca (container, options) {
 	if(typeof $ === "undefined") 
 		throw "This game requires jQuery in order to run";
 	
+	if(typeof $.fn.modal === "undefined")
+		throw "This game requires Bootstrap in order to run";
+	
 	if(options == undefined) options = {};
 	
 	container = $(container);
