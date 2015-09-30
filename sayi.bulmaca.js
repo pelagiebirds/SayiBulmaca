@@ -50,61 +50,61 @@ function SayiBulmaca (container, options) {
 	
 	var mainButtonFlag = true; //Main Button starts a round or evals a guess
 	
-	function beginRound() { //Başla butonuna basıldığında bu fonksiyon tetiklenir.
+	function beginRound() {
 		resetGame();
-		userNumber=gameInput.val(); //Kullanıcının sayısını hafızaya al.	
+		userNumber=gameInput.val();
 		
-		if(validNumber(userNumber)) { //Kullanıcının sayısı geçerli bir sayıysa aşağıdakileri yap
+		if(validNumber(userNumber)) {
 			userNumberSpan.html(':&nbsp;' + userNumber);
-			cpuNumberAssign();        //Bilgisayar da sayı tutsun
-			toggleGuess();            //Tahmin butonunu vs göster
-		}else {                       //Kullanıcının sayısı geçersizse aşağıdakileri yap
-			err(locale.errorInHoldedNumber()); //Uyarı ver
-			userNumber="";                               //Hafızada tutulan kullanıcı sayısını sil
+			cpuNumberAssign();
+			toggleGuess();            
+		}else {                       
+			err(locale.errorInHoldedNumber());
+			userNumber="";                               
 		}
 	}
 	
-	function validNumber(number) {  //Tutulan sayının geçerli olup olmadığını test eden fonksiyon	
-		if(number.length!=4) return false; //Eğer 4 haneli değilse geçersiz
+	function validNumber(number) {
+		if(number.length!=4) return false;
 		
 		for(var i=0;i<4;i++) {
-			if(number[i]!=parseInt(number[i])) return false; //Eğer harf vs girildiyse geçersiz
+			if(number[i]!=parseInt(number[i])) return false;
 		}
 		
 		for(var i=0;i<4;i++) {
 			for(var j=0;j<4;j++) {
-				if(i!=j&&number[i]==number[j]) return false; //Eğer herhangi bir rakam bir diğeriyle aynıysa geçersiz
+				if(i!=j&&number[i]==number[j]) return false; 
 			}
 		}
 		
-		if(options.excludeZero) { //Tutulan sayıda 0 olamayacaksa
+		if(options.excludeZero) {
 			if(number.indexOf("0")>-1) {
-				return false; //Sayıda 0 varsa geçersiz
+				return false;
 			}
 		}
 		
-		return true; //Yukarıdaki her şartı sağlıyorsa geçerli
+		return true;
 	}
 	
-	function cpuNumberAssign() { //Bilgisayar sayı tutsun
-		cpuNumber=""; //Hafızayı boşalt
-		cpuNumber=rnd(); //Öncelikle rnd() fonksiyonuyla rastgele bir rakam seçilsin
+	function cpuNumberAssign() {
+		cpuNumber="";
+		cpuNumber=rnd();
 		
-		while(cpuNumber.length!=4) { //Bilgisayarın sayısı 4 haneli olana kadar aşağıdakileri yap
-			var aday=rnd(); //Yeni bir rastgele sayı adayı üret
+		while(cpuNumber.length!=4) {
+			var aday=rnd();
 			var ekle=true;  
 			
 			for(var i=0;i<cpuNumber.length;i++) {
-				if(cpuNumber[i]==aday) ekle=false; //Aday rakam daha önce sayıda varsa ekleme
+				if(cpuNumber[i]==aday) ekle=false;
 			}
 			
-			if(ekle) cpuNumber+=''+aday; //Eğer ekle değişkeni hala doğru(true) ise adayı ekle
+			if(ekle) cpuNumber+=''+aday;
 		}
 		
-		if(!validNumber(cpuNumber)) { //Eğer bilgisayarın sayısı geçersizse (her ihtimale karşı) bütün işlemleri tekrar yap
+		if(!validNumber(cpuNumber)) {
 			cpuNumberAssign();
-		}else { //Değilse aşağıdakini yap
-			populateProbs(); //Bu fonksiyon aşağıda anlatılıyor
+		}else {
+			populateProbs();
 		}
 		
 		return;
@@ -117,11 +117,11 @@ function SayiBulmaca (container, options) {
 		mainButtonFlag = false;
 	}
 	
-	function rnd() { //Rastgele rakam üreten fonksiyon
-		var _rand = Math.floor(Math.random()*10); //Matematiksel ve JavaScriptsel zırvalar...
+	function rnd() {
+		var _rand = Math.floor(Math.random()*10);
 		
-		if(options.excludeZero) { //Sayıda 0 olmayacaksa
-				while(_rand == 0) { //Bilgisayarın tuttuğu sayıda da 0 olamaz
+		if(options.excludeZero) {
+				while(_rand == 0) {
 					_rand = Math.floor(Math.random()*10);
 				}
 		}
@@ -129,8 +129,8 @@ function SayiBulmaca (container, options) {
 		return _rand; 
 	}
 	
-	function randomGuess() { //Tüm olasılıklar kümesinden rastgele bir tercih yapmaya yaran fonksiyon
-		var elms = probs.length-1; //Kümede hali hazırda kaç eleman varsa işte...
+	function randomGuess() {
+		var elms = probs.length-1;
 		
 		var rand  = Math.random();
 		var i=0;
@@ -140,22 +140,22 @@ function SayiBulmaca (container, options) {
 			i++;
 		}
 		
-		return probs[i]; //Rastgele tahmini aktar
+		return probs[i];
 	}
 	
-	function populateProbs() { //Tüm olası sayı kümesini üreten fonksiyon
+	function populateProbs() {
 		var eleman="";
-		var _startFrom = options.excludeZero ? 1 : 0; //Sayıda 0 olmayacaksa 1'den, olacaksa 0'dan başla
+		var _startFrom = options.excludeZero ? 1 : 0;
 		
-		for(var i=_startFrom;i<10;i++) { //0'dan 10'a kadar birer birer arttır i'yi
-			for(var j=_startFrom;j<10;j++) {//Aynısı j için de...
-				if(i!=j) { //i j'ye eşit değilse (rakamlar tekrar edemez)
-					for(var k=_startFrom;k<10;k++) { //k'yi de 0'dan 10'a kadar artır
-						if(k!=i&&k!=j) { //Hiçbir rakam eşit değilse
-							for(var l=_startFrom;l<10;l++) { //l'yi de 0'dan 10'a...
-								if(l!=k&&l!=j&&l!=i) { //Hâlâ hiçbir rakam eşit değilse bunlardan bir sayı üret
-									eleman=i+''+j+''+k+''+l; //İlk sayı mesela 0123, böyle böyle üretiliyor tüm küme
-									probs.push(eleman); //Kümeye ekle bu elemanı
+		for(var i=_startFrom;i<10;i++) {
+			for(var j=_startFrom;j<10;j++) {
+				if(i!=j) { 
+					for(var k=_startFrom;k<10;k++) { 
+						if(k!=i&&k!=j) { 
+							for(var l=_startFrom;l<10;l++) { 
+								if(l!=k&&l!=j&&l!=i) { 
+									eleman=i+''+j+''+k+''+l; 
+									probs.push(eleman); 
 								}
 							}
 						}
@@ -165,7 +165,7 @@ function SayiBulmaca (container, options) {
 		}
 	}
 	
-	function validGuess(number) { //Bu fonksyion tahminlerin geçerli olup olmadığını kontrol etmek için var
+	function validGuess(number) { 
 		if(number.length!=4) return false;
 		
 		for(var i=0;i<4;i++) {
@@ -181,8 +181,7 @@ function SayiBulmaca (container, options) {
 		return true;
 	}
 
-	function evalGuess(guess, num) { //Yapılan tahminleri tutulan sayılara bakarak değerlendr ve +x -x filan de
-	//Çok amelelik var, bakarak ne kadar anlarsan artık :)
+	function evalGuess(guess, num) { 
 		var rtn={}, plus=0, minus=0, text="";
 		
 		for(var i=0;i<4;i++) {
@@ -216,47 +215,45 @@ function SayiBulmaca (container, options) {
 		return rtn;
 	}
 
-	function userGuess() { //Kullanıcı bir tahminde bulunursa
+	function userGuess() { 
 		var guess=gameInput.val();
 		
 		gameInput.val('').focus();
 		
-		if(validGuess(guess)) { //Tahmin geçerli/tutarlı bir tahminse
-			var result = evalGuess(guess,cpuNumber); //Bilgisayarın sayısına bakarak değerlendirme yap
+		if(validGuess(guess)) { 
+			var result = evalGuess(guess,cpuNumber); 
 			var hg     = $("#hgSayiBulmaca_" + getGUID());
 			var hr     = $("#hrSayiBulmaca_" + getGUID());
 			
 			hg.html(hg.html() + guess + '<br />');
 			hr.html(hr.html() + result.text + '<br />');
 			
-			if(result.arti==4) { //Sonuç +4 ise insan kazandı!
+			if(result.arti==4) { 
 				endGame(1);
-			}else { //Değilse bilgisayarda sıra
-				cpuGuess(); //Bilgisayar insanın sayısını tahmin etsin
+			}else {
+				cpuGuess();
 			}
-		}else { //Tahmin tutarlı/geçerli değilse
+		}else { 
 			err(locale.errorInGuessNumber());
 		}
 		
 		return;
 	}
 
-	function cpuGuess() { //Bilgisayar tahmin fonk.
-		if(probs.length!=1) { //Olasılıklar kümesinde yalnızca tek bir eleman kalmadıysa
-			var temp=[]; //Geçici bir hafıza aç
-			var guess=randomGuess(); //Kümeden rastgele bir eleman seç
-			var result=evalGuess(guess, userNumber); //Kullanıcının sayısıyla tahmini karşılaştır (+n -m gibi bir sonuç gelecek)
+	function cpuGuess() { 
+		if(probs.length!=1) { 
+			var temp=[]; 
+			var guess=randomGuess(); 
+			var result=evalGuess(guess, userNumber); 
 			var plus=result.arti, minus=result.eksi;
 			
-			probs.forEach(function(value){ //Tüm olasılıklar kümesindeki her eleman için:
-				var res=evalGuess(guess, value); //Tahminle elemanı karşılaştır
+			probs.forEach(function(value){ 
+				var res=evalGuess(guess, value);
 				
-				if(res.arti==plus&&res.eksi==minus) temp.push(value); //Eğer o eleman +n -m ise geçici hafızaya onu da ekle
+				if(res.arti==plus&&res.eksi==minus) temp.push(value); 
 			});
 			
-			//Yukarıdaki işlem sayesinde kullanıcının hangi sayıları "tutmadığını" öğreniyoruz. Tüm olasılıklar kümesinde
-			//tek eleman kalıncaya kadar oyun devam edecek. En nihayetinde bilgisayar da sayıyı bilecek.	
-			probs = temp.slice(); //Geçici hafızadaki tüm elemanları tüm olasılıklar kümesine aktar
+			probs = temp.slice();
 
 			var cg     = $("#cgSayiBulmaca_" + getGUID());
 			var cr     = $("#crSayiBulmaca_" + getGUID());
@@ -264,12 +261,12 @@ function SayiBulmaca (container, options) {
 			cg.html(cg.html() + guess + '<br />');
 			cr.html(cr.html() + result.text + '<br />');
 			
-			if(plus==4) { //Eğer bilgisayar +4 bulduysa o kazandı
+			if(plus==4) { 
 				endGame(2);
-			}else { //Yoksa devam et
+			}else { 
 				toggleGuess();
 			}		
-		}else { //Tüm olasılıklar kümesinde tek eleman kaldıysa bilgisayar kesin olarak bilmiş demektir.
+		}else { 
 			var guess=probs[0];
 			var result=evalGuess(guess, userNumber);		
 			var cg     = $("#cgSayiBulmaca_" + getGUID());
@@ -281,7 +278,7 @@ function SayiBulmaca (container, options) {
 		}
 	}
 
-	function endGame(who) { //Oyunun bittiğini bildir
+	function endGame(who) { 
 		if(who==1) {
 			err(locale.userWinText(), locale.userWinTitle());
 		}else {
