@@ -3,7 +3,7 @@ Guess the Number. You can play against AI.
 
 ##How to setup?
 
-The game requires jQuery. Include jQuery first. Then add sayi.bulmaca.js with a script tag in the head section.
+The game requires jQuery and Bootstrap. Include sayi.bulmaca.js after them.
 
 ##How to initialise the game?
 
